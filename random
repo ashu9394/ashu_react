@@ -1,0 +1,54 @@
+const { MongoClient } = require('mongodb');
+
+// Replace the following with your MongoDB connection string
+
+const uri =
+  "mongodb://opusmdbpoc:yEbLwx4Kw5aBFojQ@pl-0-eu-central-1.yxql6.mongodb.net:1030,pl-0-eu-central-1.yxql6.mongodb.net:1031,pl-0-eu-central-1.yxql6.mongodb.net:1032/OPUS_AGIC?replicaSet=atlas-cl1d85-shard-0&ssl=true&authSource=admin&connectTimeoutMS=600000&socketTimeoutMS=600000"; // Example for local MongoDB
+const dbName = "OPUS_AGIC";
+// const uri = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/test?retryWrites=true&w=majority'; // For a MongoDB Atlas cluster
+
+let client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+async function run() {
+  try {
+    // Connect to the MongoDB cluster
+    await client.connect();
+
+    console.log('Connected successfully to MongoDB');
+
+    // Specify the database and collection you want to work with
+    const database = client.db('OPUS_AGIC');
+
+    const changeStream = database.watch([], {
+        fullDocument: 'updateLookup',
+        fullDocumentBeforeChange: 'whenAvailable'
+      });
+
+
+
+      changeStream.on('change', (change) => {
+        console.log('Change detected:');
+        console.log('Operation Type:', change.operationType);
+        console.log('Collection:', change.ns.coll);
+  
+        fs.writeFile("./flow.json", JSON.stringify(change));
+
+        console.log(change);
+  
+      });
+
+    console.log('Listening for changes...');
+
+
+  } catch (err) {
+    console.error('An error occurred connecting to MongoDB:', err);
+  } finally {
+    // Close the connection to the MongoDB cluster
+    await client.close();
+  }
+}
+
+run().catch(console.dir);
