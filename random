@@ -2,11 +2,6 @@ const { MongoClient } = require('mongodb');
 
 // Replace the following with your MongoDB connection string
 
-const uri =
-  "mongodb://opusmdbpoc:yEbLwx4Kw5aBFojQ@pl-0-eu-central-1.yxql6.mongodb.net:1030,pl-0-eu-central-1.yxql6.mongodb.net:1031,pl-0-eu-central-1.yxql6.mongodb.net:1032/OPUS_AGIC?replicaSet=atlas-cl1d85-shard-0&ssl=true&authSource=admin&connectTimeoutMS=600000&socketTimeoutMS=600000"; // Example for local MongoDB
-const dbName = "OPUS_AGIC";
-// const uri = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/test?retryWrites=true&w=majority'; // For a MongoDB Atlas cluster
-
 let client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
